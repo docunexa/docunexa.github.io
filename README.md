@@ -170,8 +170,8 @@ src/
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/USERNAME/REPOSITORY.git
-cd REPOSITORY
+git clone https://github.com/docunexa/docunexa.github.io.git
+cd docunexa.github.io
 
 # Install dependencies
 npm install --legacy-peer-deps
@@ -223,6 +223,9 @@ To enable GitHub Pages in your repository:
 A `public/404.html` redirect script is included so that refreshing nested routes or URLs on GitHub Pages never returns a 404 error.
 
 ---
+### Auther
+
+![Mohd Shami](https://mohdshamii.github.io)
 
 ## License
 
