@@ -225,7 +225,7 @@ A `public/404.html` redirect script is included so that refreshing nested routes
 ---
 ### Auther
 
-![Mohd Shami](https://mohdshamii.github.io)
+[Mohd Shami](https://mohdshamii.github.io)
 
 ## License
 
