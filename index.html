@@ -1,55 +1,19 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NovaSpace | Explore Beyond</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="responsive.css">
-</head>
-<body>
-  <header>
-    <a class="logo" href="index.html">NovaSpace<span>.</span></a>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="services.html">Services</a>
-      <a href="#contact">Contact</a>
-    </nav>
-    <button id="themeBtn">☀️</button>
-  </header>
-
-  <main class="hero">
-    <div class="hero-content">
-      <p class="tag">✦ YOUR NEXT BIG IDEA STARTS HERE</p>
-      <h1>Explore beyond<br>the <span>ordinary.</span></h1>
-      <p class="description">
-        Discover new possibilities with creative ideas,
-        modern technology and limitless imagination.
-      </p>
-      <div class="actions">
-        <a href="services.html" class="btn">Explore More ↗</a>
-        <a href="about.html" class="secondary">Discover us</a>
-      </div>
-    </div>
-    <div class="planet">
-      <div class="planet-ring"></div>
-      <div class="planet-core">N</div>
-    </div>
-  </main>
-
-  <section class="features">
-    <article><span>✦</span><h3>Creative Ideas</h3><p>Think differently and dream bigger.</p></article>
-    <article><span>◈</span><h3>Modern Design</h3><p>Beautiful experiences built for everyone.</p></article>
-    <article><span>↗</span><h3>Future Ready</h3><p>Move forward with confidence.</p></article>
-  </section>
-
-  <footer id="contact">
-    <p>© 2026 NovaSpace. Made for dreamers.</p>
-    <a href="mailto:hello@example.com">Get in touch ↗</a>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DocuFlow — Every document. One simple workspace.</title>
+    <meta name="description" content="Convert, compress, merge, split, and organize your documents in seconds. 100% private and processed locally in your browser." />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-df-white text-df-black antialiased selection:bg-df-pink selection:text-df-white min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="./src/main.tsx"></script>
+  </body>
 </html>
+
