@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/common/Navbar';
+import { MegaMenu } from './components/common/MegaMenu';
 import { Footer } from './components/common/Footer';
 import { Hero } from './components/home/Hero';
 import { Workspace } from './components/workspace/Workspace';
 import { ToolDirectory } from './components/tools/ToolDirectory';
-import { ToolModal } from './components/tools/ToolModal';
+import { InteractiveToolWorkspace } from './components/tools/InteractiveToolWorkspace';
 import { PrivacyModal } from './components/views/PrivacyModal';
 import { AboutModal } from './components/views/AboutModal';
 import { FormatsModal } from './components/views/FormatsModal';
@@ -20,7 +21,8 @@ export function App() {
   });
 
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFileItem[]>([]);
-  const [activeTool, setActiveTool] = useState<ToolDefinition | null>(null);
+  const [interactiveTool, setInteractiveTool] = useState<ToolDefinition | null>(null);
+  const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
 
   // Modals state
   const [privacyOpen, setPrivacyOpen] = useState(false);
@@ -55,6 +57,7 @@ export function App() {
     }));
 
     setUploadedFiles((prev) => [...prev, ...newItems]);
+    setInteractiveTool(null);
 
     // Scroll smoothly to workspace
     setTimeout(() => {
@@ -71,19 +74,25 @@ export function App() {
   };
 
   const handleSelectTool = (tool: ToolDefinition) => {
-    setActiveTool(tool);
+    setInteractiveTool(tool);
+    setIsMegaMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNavigateTools = () => {
-    document.getElementById('all-tools')?.scrollIntoView({ behavior: 'smooth' });
+    setInteractiveTool(null);
+    setTimeout(() => {
+      document.getElementById('all-tools')?.scrollIntoView({ behavior: 'smooth' });
+    }, 50);
   };
 
   const handleNavigateHome = () => {
+    setInteractiveTool(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-df-white dark:bg-df-black text-df-black dark:text-df-white transition-colors">
+    <div className="min-h-screen flex flex-col bg-df-white dark:bg-df-black text-df-black dark:text-df-white transition-colors relative">
       {/* Top Navigation */}
       <Navbar
         darkMode={darkMode}
@@ -93,17 +102,29 @@ export function App() {
         onOpenFormats={() => setFormatsOpen(true)}
         onNavigateTools={handleNavigateTools}
         onNavigateHome={handleNavigateHome}
+        onSelectTool={handleSelectTool}
+        onToggleMegaMenu={() => setIsMegaMenuOpen(!isMegaMenuOpen)}
+        isMegaMenuOpen={isMegaMenuOpen}
+      />
+
+      {/* Floating MegaMenu */}
+      <MegaMenu
+        isOpen={isMegaMenuOpen}
+        onClose={() => setIsMegaMenuOpen(false)}
+        onSelectTool={handleSelectTool}
       />
 
       {/* Main Content Area */}
       <main className="flex-1">
-        {/* Hero Section */}
-        {uploadedFiles.length === 0 ? (
-          <Hero
-            onFilesSelected={handleAddFiles}
-            onExploreTools={handleNavigateTools}
+        {interactiveTool ? (
+          /* Dedicated iLovePDF Interactive Workspace */
+          <InteractiveToolWorkspace
+            tool={interactiveTool}
+            onBack={() => setInteractiveTool(null)}
+            onSelectOtherTool={handleSelectTool}
           />
-        ) : (
+        ) : uploadedFiles.length > 0 ? (
+          /* Multi-file batch Workspace */
           <section id="workspace-section" className="py-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Workspace
               files={uploadedFiles}
@@ -112,10 +133,18 @@ export function App() {
               onClearFiles={handleClearFiles}
             />
           </section>
+        ) : (
+          /* Standard Home View: Hero with iLovePDF quick grid + Universal Dropzone */
+          <>
+            <Hero
+              onFilesSelected={handleAddFiles}
+              onExploreTools={handleNavigateTools}
+              onSelectTool={handleSelectTool}
+            />
+            {/* Tool Directory (Searchable 50+ tool grid) */}
+            <ToolDirectory onSelectTool={handleSelectTool} />
+          </>
         )}
-
-        {/* Tool Directory (Searchable 50+ tool grid) */}
-        <ToolDirectory onSelectTool={handleSelectTool} />
       </main>
 
       {/* Footer */}
@@ -126,13 +155,7 @@ export function App() {
         onOpenContact={() => setContactOpen(true)}
       />
 
-      {/* Modals */}
-      <ToolModal
-        tool={activeTool}
-        isOpen={!!activeTool}
-        onClose={() => setActiveTool(null)}
-      />
-
+      {/* Information Modals */}
       <PrivacyModal
         isOpen={privacyOpen}
         onClose={() => setPrivacyOpen(false)}
@@ -157,4 +180,3 @@ export function App() {
 }
 
 export default App;
-

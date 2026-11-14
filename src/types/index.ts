@@ -78,6 +78,16 @@ export interface ConversionOptions {
   pdfSubject?: string;
   pdfKeywords?: string;
   
+  // Signature & Redaction & Crop
+  signatureDataUrl?: string;
+  signaturePage?: number;
+  signatureX?: number;
+  signatureY?: number;
+  signatureWidth?: number;
+  signatureHeight?: number;
+  cropMarginPercent?: number;
+  redactions?: Array<{ page: number; x: number; y: number; width: number; height: number }>;
+  
   // Image Options
   imageTargetFormat?: 'png' | 'jpg' | 'webp';
   imageQuality?: number; // 0.1 to 1.0
