@@ -17,6 +17,10 @@ import { addTextWatermarkToPdf, addImageWatermarkToPdf } from './pdf/pdfWatermar
 import { addTextToPdf } from './pdf/pdfAddText';
 import { extractImagesFromPdf } from './pdf/pdfExtractImages';
 import { updatePdfMetadata } from './pdf/pdfMetadata';
+import { signPdf } from './pdf/pdfSign';
+import { cropPdf } from './pdf/pdfCrop';
+import { redactPdf } from './pdf/pdfRedact';
+import { comparePdfFiles } from './pdf/pdfCompare';
 
 import { convertDocxToPdf } from './word/wordToPdf';
 import { convertDocxToTxt, convertDocxToHtml, convertDocxToMarkdown } from './word/wordToTxt';
@@ -202,6 +206,48 @@ export async function executeToolConversion(
         onProgress
       );
       return { blob, filename: `${baseName}-metadata.pdf` };
+    }
+    case 'pdf-sign': {
+      if (!options.signatureDataUrl) {
+        throw new Error('Please provide a signature to apply.');
+      }
+      const blob = await signPdf(
+        primaryFile,
+        options.signatureDataUrl,
+        options.signaturePage || 1,
+        options.signatureX,
+        options.signatureY,
+        options.signatureWidth || 180,
+        options.signatureHeight || 60,
+        onProgress
+      );
+      return { blob, filename: `${baseName}-signed.pdf` };
+    }
+    case 'pdf-crop': {
+      const blob = await cropPdf(
+        primaryFile,
+        {
+          marginPercent: options.cropMarginPercent || 5,
+          cropBox: options.cropBox,
+        },
+        onProgress
+      );
+      return { blob, filename: `${baseName}-cropped.pdf` };
+    }
+    case 'pdf-redact': {
+      const blob = await redactPdf(
+        primaryFile,
+        options.redactions || [{ page: 1, x: 50, y: 500, width: 200, height: 40 }],
+        onProgress
+      );
+      return { blob, filename: `${baseName}-redacted.pdf` };
+    }
+    case 'pdf-compare': {
+      if (files.length < 2) {
+        throw new Error('Please select at least 2 PDF documents to compare.');
+      }
+      const comparison = await comparePdfFiles(files[0], files[1], onProgress);
+      return { blob: comparison.reportBlob, filename: 'comparison-report.txt' };
     }
 
     // --- Word Tools ---
