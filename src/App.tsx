@@ -4,7 +4,6 @@ import { MegaMenu } from './components/common/MegaMenu';
 import { Footer } from './components/common/Footer';
 import { Hero } from './components/home/Hero';
 import { Workspace } from './components/workspace/Workspace';
-import { ToolDirectory } from './components/tools/ToolDirectory';
 import { InteractiveToolWorkspace } from './components/tools/InteractiveToolWorkspace';
 import { PrivacyModal } from './components/views/PrivacyModal';
 import { AboutModal } from './components/views/AboutModal';
@@ -134,16 +133,11 @@ export function App() {
             />
           </section>
         ) : (
-          /* Standard Home View: Hero with iLovePDF quick grid + Universal Dropzone */
-          <>
-            <Hero
-              onFilesSelected={handleAddFiles}
-              onExploreTools={handleNavigateTools}
-              onSelectTool={handleSelectTool}
-            />
-            {/* Tool Directory (Searchable 50+ tool grid) */}
-            <ToolDirectory onSelectTool={handleSelectTool} />
-          </>
+          /* Clean Unified Home View */
+          <Hero
+            onFilesSelected={handleAddFiles}
+            onSelectTool={handleSelectTool}
+          />
         )}
       </main>
 

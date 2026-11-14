@@ -94,10 +94,12 @@ export const ToolCard: React.FC<ToolCardProps> = ({ tool, onSelect }) => {
     >
       <div>
         <div className="flex items-start justify-between mb-3.5">
-          <div className="w-10 h-10 rounded-lg bg-df-black/5 dark:bg-df-white/5 border border-df-black/10 dark:border-df-white/10 flex items-center justify-center text-df-black dark:text-df-white group-hover:bg-df-blue group-hover:text-df-white group-hover:border-df-blue transition-colors">
+          <div className="w-11 h-11 rounded-xl bg-df-blue/10 text-df-blue border border-df-blue/20 group-hover:bg-df-blue group-hover:text-df-white group-hover:border-df-blue transition-colors flex items-center justify-center">
             <IconComponent className="w-5 h-5" />
           </div>
-          <StatusBadge status={tool.status} notice={tool.statusNotice} />
+          {tool.status !== 'fully-implemented' && (
+            <StatusBadge status={tool.status} notice={tool.statusNotice} />
+          )}
         </div>
 
         <h4 className="font-bold text-base text-df-black dark:text-df-white group-hover:text-df-blue transition-colors mb-1.5">
