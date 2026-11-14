@@ -1,6 +1,6 @@
 # DocuFlow Aka DOCuNEXA — All-in-One Document Converter
 
-> **Every document. One simple workspace.**  
+> **Free, private in-browser document tools.**  
 > Convert, compress, merge, split, and organize your documents in seconds — 100% locally in your browser.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)

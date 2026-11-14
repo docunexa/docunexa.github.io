@@ -1,306 +1,339 @@
-import React from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import {
-  ShieldCheck,
-  Zap,
-  Lock,
-  Sparkles,
-  Combine,
-  Split,
-  Minimize2,
+  Search,
+  Upload,
+  X,
   FileText,
-  FileType,
+  FileCode,
   Image as ImageIcon,
   Images,
-  Stamp,
+  Code,
+  FileType,
+  FileCheck,
+  Globe,
+  Combine,
+  Split,
+  Copy,
+  ArrowUpDown,
   RotateCw,
+  Trash2,
+  Minimize2,
+  Lock,
   Unlock,
   Hash,
+  Stamp,
+  Sparkles,
+  Type,
+  FolderArchive,
+  Info,
+  FilePlus,
+  Files,
+  Eye,
+  Maximize2,
+  Minimize,
   Crop,
+  Sliders,
+  Layers,
+  Archive,
+  HelpCircle,
+  Calculator,
+  ShieldCheck,
   ArrowRight,
   LucideIcon,
 } from 'lucide-react';
-import { Dropzone } from '../common/Dropzone';
-import { ToolDefinition } from '../../types';
+import { ToolDefinition, ToolCategory } from '../../types';
 import { TOOLS_REGISTRY } from '../../tools/registry';
 
 interface HeroProps {
   onFilesSelected: (files: File[]) => void;
-  onExploreTools: () => void;
   onSelectTool: (tool: ToolDefinition) => void;
 }
 
-interface HeroQuickTool {
-  id: string;
-  name: string;
-  description: string;
-  icon: LucideIcon;
-  badge?: string;
-  isPink?: boolean;
-}
-
-const HERO_QUICK_TOOLS: HeroQuickTool[] = [
-  {
-    id: 'pdf-merge',
-    name: 'Merge PDF',
-    description: 'Combine multiple PDFs into one unified document in any order.',
-    icon: Combine,
-    badge: 'Popular',
-  },
-  {
-    id: 'pdf-split',
-    name: 'Split PDF',
-    description: 'Extract custom page ranges or separate all pages into individual files.',
-    icon: Split,
-    badge: 'Popular',
-  },
-  {
-    id: 'pdf-compress',
-    name: 'Compress PDF',
-    description: 'Reduce PDF file size drastically while retaining pristine visual quality.',
-    icon: Minimize2,
-    badge: 'Optimized',
-  },
-  {
-    id: 'pdf-to-docx',
-    name: 'PDF to Word',
-    description: 'Convert PDF documents into editable Microsoft Word (.docx) files.',
-    icon: FileText,
-    badge: 'High-Fidelity',
-  },
-  {
-    id: 'docx-to-pdf',
-    name: 'Word to PDF',
-    description: 'Transform DOCX documents into clean, universal PDF documents.',
-    icon: FileType,
-  },
-  {
-    id: 'pdf-to-images',
-    name: 'PDF to JPG',
-    description: 'Extract pages as high-resolution JPG or PNG images in seconds.',
-    icon: ImageIcon,
-  },
-  {
-    id: 'images-to-pdf',
-    name: 'JPG to PDF',
-    description: 'Turn your JPG/PNG images into a single professional PDF document.',
-    icon: Images,
-  },
-  {
-    id: 'pdf-sign',
-    name: 'Sign PDF',
-    description: 'Draw, type, or upload your signature directly onto your PDF pages.',
-    icon: Sparkles,
-    badge: 'New',
-    isPink: true,
-  },
-  {
-    id: 'pdf-watermark-text',
-    name: 'Watermark',
-    description: 'Stamp customized text or image watermarks with precise opacity and angle.',
-    icon: Stamp,
-  },
-  {
-    id: 'pdf-rotate',
-    name: 'Rotate PDF',
-    description: 'Rotate individual pages or entire documents 90° or 180° clockwise.',
-    icon: RotateCw,
-  },
-  {
-    id: 'pdf-page-numbers',
-    name: 'Page Numbers',
-    description: 'Insert formatted page numbers into any corner or center of your PDF.',
-    icon: Hash,
-  },
-  {
-    id: 'pdf-protect',
-    name: 'Protect PDF',
-    description: 'Encrypt your PDF with standard password protection for security.',
-    icon: Lock,
-  },
-  {
-    id: 'pdf-unlock',
-    name: 'Unlock PDF',
-    description: 'Remove password restrictions with client-side decryption.',
-    icon: Unlock,
-  },
-  {
-    id: 'pdf-crop',
-    name: 'Crop PDF',
-    description: 'Trim page margins or set custom bounding box coordinates.',
-    icon: Crop,
-    badge: 'New',
-  },
-  {
-    id: 'pdf-redact',
-    name: 'Redact PDF',
-    description: 'Permanently black out sensitive or confidential information.',
-    icon: ShieldCheck,
-    badge: 'Secure',
-  },
-  {
-    id: 'pdf-compare',
-    name: 'Compare PDFs',
-    description: 'Analyze side-by-side textual and structural differences.',
-    icon: Split,
-  },
+const CATEGORIES: { id: ToolCategory; label: string }[] = [
+  { id: 'all', label: 'All Tools' },
+  { id: 'pdf', label: 'PDF Tools' },
+  { id: 'word', label: 'Word (.docx)' },
+  { id: 'image', label: 'Images' },
+  { id: 'text', label: 'Text & Web' },
+  { id: 'utility', label: 'Utilities' },
 ];
 
-export const Hero: React.FC<HeroProps> = ({ onFilesSelected, onExploreTools, onSelectTool }) => {
-  const handleQuickToolClick = (toolId: string) => {
-    const tool = TOOLS_REGISTRY.find((t) => t.id === toolId);
-    if (tool) {
-      onSelectTool(tool);
+const ICON_MAP: Record<string, LucideIcon> = {
+  FileText,
+  FileCode,
+  Image: ImageIcon,
+  Images,
+  Code,
+  FileType,
+  FileCheck,
+  Globe,
+  Combine,
+  Split,
+  Copy,
+  ArrowUpDown,
+  RotateCw,
+  Trash2,
+  Minimize2,
+  Lock,
+  Unlock,
+  Hash,
+  Stamp,
+  Sparkles,
+  Type,
+  FolderArchive,
+  Info,
+  FilePlus,
+  Files,
+  Eye,
+  Maximize2,
+  Minimize,
+  Crop,
+  Sliders,
+  Layers,
+  Archive,
+  HelpCircle,
+  Calculator,
+  ShieldCheck,
+};
+
+// Priority order for the primary PDF tools
+const PRIORITY_TOOL_IDS = [
+  'pdf-merge',
+  'pdf-split',
+  'pdf-compress',
+  'pdf-to-docx',
+  'docx-to-pdf',
+  'pdf-to-images',
+  'images-to-pdf',
+  'pdf-sign',
+  'pdf-watermark-text',
+  'pdf-rotate',
+  'pdf-page-numbers',
+  'pdf-protect',
+  'pdf-unlock',
+  'pdf-crop',
+  'pdf-redact',
+  'pdf-compare',
+];
+
+export const Hero: React.FC<HeroProps> = ({ onFilesSelected, onSelectTool }) => {
+  const [selectedCategory, setSelectedCategory] = useState<ToolCategory>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isDragOver, setIsDragOver] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Filter tools with priority ordering
+  const displayTools = useMemo(() => {
+    let list = TOOLS_REGISTRY.filter((tool) => {
+      const matchesCategory =
+        selectedCategory === 'all' || tool.category === selectedCategory;
+
+      const q = searchQuery.toLowerCase().trim();
+      const matchesQuery =
+        !q ||
+        tool.name.toLowerCase().includes(q) ||
+        tool.description.toLowerCase().includes(q) ||
+        tool.sourceFormats.some((fmt) => fmt.toLowerCase().includes(q)) ||
+        (tool.targetFormat && tool.targetFormat.toLowerCase().includes(q));
+
+      return matchesCategory && matchesQuery;
+    });
+
+    if (selectedCategory === 'all' && !searchQuery.trim()) {
+      // Sort priority tools to the front
+      list = [...list].sort((a, b) => {
+        const indexA = PRIORITY_TOOL_IDS.indexOf(a.id);
+        const indexB = PRIORITY_TOOL_IDS.indexOf(b.id);
+        if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+        if (indexA !== -1) return -1;
+        if (indexB !== -1) return 1;
+        return 0;
+      });
+    }
+
+    return list;
+  }, [selectedCategory, searchQuery]);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      onFilesSelected(Array.from(e.dataTransfer.files));
+    }
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      onFilesSelected(Array.from(e.target.files));
     }
   };
 
   return (
-    <section className="relative pt-10 pb-16 sm:pt-16 sm:pb-20 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-        {/* Brand Headline */}
-        <div className="text-center max-w-4xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-df-blue/10 border border-df-blue/20 text-xs font-bold text-df-blue shadow-sm">
-            <Sparkles className="w-3.5 h-3.5 text-df-pink" />
-            <span>Every tool you need to work with PDFs in one place</span>
-          </div>
-
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-df-black dark:text-df-white leading-[1.1]">
-            Every document.{' '}
-            <span className="text-df-blue underline decoration-df-pink decoration-wavy decoration-2">
-              One simple workspace.
-            </span>
+    <section className="pt-10 pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        {/* Simple & Human Heading */}
+        <div className="text-center max-w-3xl mx-auto space-y-3">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-df-black dark:text-df-white">
+            Every tool you need to work with PDFs in one place
           </h1>
-
-          <p className="text-base sm:text-lg text-df-black/75 dark:text-df-white/75 max-w-2xl mx-auto leading-relaxed font-normal">
-            Every tool you need to use PDFs, at your fingertips. All are <strong className="text-df-blue font-semibold">100% FREE</strong> and easy to use! Merge, split, compress, convert, rotate, sign, crop, and watermark PDFs with just a few clicks.
+          <p className="text-sm sm:text-base text-df-black/65 dark:text-df-white/65 max-w-xl mx-auto leading-relaxed">
+            Free, fast, and completely in your browser. Merge, split, compress, convert, rotate, and sign documents with zero server uploads.
           </p>
         </div>
 
-        {/* Signature iLovePDF-Style Quick Tools Grid */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between pb-2 border-b border-df-black/10 dark:border-df-white/10">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-df-black/60 dark:text-df-white/60">
-                Most Popular PDF Tools
-              </span>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-df-blue/10 text-df-blue border border-df-blue/20">
-                Direct Interactive Mode
-              </span>
+        {/* Compact Quick-Drop Bar */}
+        <div
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          className={`max-w-3xl mx-auto p-4 rounded-2xl border-2 border-dashed transition-all flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left ${
+            isDragOver
+              ? 'border-df-blue bg-df-blue/5 scale-[1.01]'
+              : 'border-df-black/15 dark:border-df-white/15 bg-df-white dark:bg-df-black hover:border-df-blue/40'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-df-blue/10 text-df-blue flex items-center justify-center shrink-0">
+              <Upload className="w-5 h-5" />
             </div>
-            <button
-              type="button"
-              onClick={onExploreTools}
-              className="text-xs font-bold text-df-blue hover:text-df-blue/80 flex items-center gap-1 group"
-            >
-              <span>View all 50+ tools</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            <div>
+              <p className="text-xs sm:text-sm font-bold text-df-black dark:text-df-white">
+                Convert or manage any document directly
+              </p>
+              <p className="text-[11px] text-df-black/55 dark:text-df-white/55">
+                Drop your file here (PDF, Word, Images, TXT, HTML) or choose a tool below
+              </p>
+            </div>
           </div>
 
+          <div className="shrink-0">
+            <input
+              ref={fileInputRef}
+              type="file"
+              multiple
+              onChange={handleFileInputChange}
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="px-4 py-2 rounded-xl bg-df-blue hover:bg-df-blue/90 text-df-white text-xs font-bold transition-all shadow-sm cursor-pointer"
+            >
+              Select Document
+            </button>
+          </div>
+        </div>
+
+        {/* Filter Tabs & Search Bar */}
+        <div id="all-tools" className="space-y-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pb-2 border-b border-df-black/10 dark:border-df-white/10">
+            {/* Category Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 scrollbar-none">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold whitespace-nowrap transition-colors ${
+                    selectedCategory === cat.id
+                      ? 'bg-df-blue text-df-white shadow-sm'
+                      : 'text-df-black/70 dark:text-df-white/70 hover:bg-df-black/5 dark:hover:bg-df-white/5 hover:text-df-black dark:hover:text-df-white'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Clean Search Input */}
+            <div className="w-full sm:w-64 relative">
+              <Search className="w-4 h-4 text-df-black/40 dark:text-df-white/40 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search tools..."
+                className="w-full pl-9 pr-8 py-1.5 rounded-lg border border-df-black/10 dark:border-df-white/10 bg-df-white dark:bg-df-black text-xs text-df-black dark:text-df-white placeholder:text-df-black/40 dark:placeholder:text-df-white/40 focus:outline-none focus:border-df-blue transition-colors"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-df-black/40 hover:text-df-black dark:text-df-white/40 dark:hover:text-df-white"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Unified Tool Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {HERO_QUICK_TOOLS.map((item) => {
-              const Icon = item.icon;
+            {displayTools.map((tool) => {
+              const Icon = ICON_MAP[tool.iconName] || FileText;
               return (
                 <button
-                  key={item.id}
+                  key={tool.id}
                   type="button"
-                  onClick={() => handleQuickToolClick(item.id)}
-                  className="group text-left p-5 rounded-2xl border border-df-black/10 dark:border-df-white/10 bg-df-white dark:bg-df-black hover:border-df-blue/50 dark:hover:border-df-blue/50 hover:shadow-lg shadow-sm transition-all duration-200 hover:-translate-y-0.5 flex flex-col justify-between"
+                  onClick={() => onSelectTool(tool)}
+                  className="group text-left p-5 rounded-2xl border border-df-black/10 dark:border-df-white/10 bg-df-white dark:bg-df-black hover:border-df-blue dark:hover:border-df-blue hover:shadow-md transition-all flex flex-col justify-between cursor-pointer"
                 >
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div
-                        className={`w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110 shadow-sm ${
-                          item.isPink
-                            ? 'bg-df-pink/15 text-df-pink border border-df-pink/20'
-                            : 'bg-df-blue/10 text-df-blue border border-df-blue/20'
-                        }`}
-                      >
-                        <Icon className="w-6 h-6" />
-                      </div>
-                      {item.badge && (
-                        <span
-                          className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
-                            item.isPink
-                              ? 'bg-df-pink/15 text-df-pink border border-df-pink/20'
-                              : 'bg-df-blue/10 text-df-blue border border-df-blue/20'
-                          }`}
-                        >
-                          {item.badge}
-                        </span>
-                      )}
+                    <div className="w-11 h-11 rounded-xl bg-df-blue/10 text-df-blue flex items-center justify-center group-hover:bg-df-blue group-hover:text-df-white transition-colors">
+                      <Icon className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-base text-df-black dark:text-df-white group-hover:text-df-blue transition-colors">
-                        {item.name}
+                      <h3 className="font-bold text-base text-df-black dark:text-df-white group-hover:text-df-blue transition-colors">
+                        {tool.name}
                       </h3>
-                      <p className="text-xs text-df-black/65 dark:text-df-white/65 mt-1 leading-relaxed">
-                        {item.description}
+                      <p className="text-xs text-df-black/60 dark:text-df-white/60 mt-1 leading-relaxed">
+                        {tool.description}
                       </p>
                     </div>
                   </div>
-                  <div className="pt-3 mt-3 border-t border-df-black/5 dark:border-df-white/5 flex items-center text-[11px] font-bold text-df-blue opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span>Open tool</span>
+
+                  <div className="pt-3 mt-3 border-t border-df-black/5 dark:border-df-white/5 flex items-center text-xs font-semibold text-df-blue opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span>Open</span>
                     <ArrowRight className="w-3 h-3 ml-1" />
                   </div>
                 </button>
               );
             })}
           </div>
+
+          {displayTools.length === 0 && (
+            <div className="text-center py-12 space-y-2">
+              <p className="text-sm font-semibold text-df-black/60 dark:text-df-white/60">
+                No tools match &ldquo;{searchQuery}&rdquo;
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                }}
+                className="text-xs font-bold text-df-blue hover:underline"
+              >
+                Reset filters
+              </button>
+            </div>
+          )}
         </div>
 
-        {/* Universal Multi-Format Dropzone */}
-        <div className="max-w-4xl mx-auto pt-6 space-y-4">
-          <div className="text-center space-y-1">
-            <h3 className="text-lg font-bold text-df-black dark:text-df-white">
-              Or Convert Any Document Instantly
-            </h3>
-            <p className="text-xs text-df-black/60 dark:text-df-white/60">
-              Drag &amp; drop any Word (.docx), PDF, Image (PNG/JPG/WebP), TXT, Markdown, or HTML file below
-            </p>
-          </div>
-          <Dropzone
-            onFilesSelected={onFilesSelected}
-            className="shadow-md hover:shadow-xl transition-shadow bg-df-white dark:bg-df-black border-2 border-dashed border-df-black/15 dark:border-df-white/15 hover:border-df-blue"
-          />
-        </div>
-
-        {/* 3 Pillars Trust Bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto pt-4">
-          <div className="flex items-start gap-3.5 p-4 rounded-xl border border-df-black/10 dark:border-df-white/10 bg-df-white dark:bg-df-black">
-            <div className="w-9 h-9 rounded-lg bg-df-blue/10 text-df-blue flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="font-bold text-sm text-df-black dark:text-df-white">100% Client-Side Privacy</h4>
-              <p className="text-xs text-df-black/60 dark:text-df-white/60 mt-0.5">
-                Every document is processed in your local browser sandbox. Zero bytes ever leave your device.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3.5 p-4 rounded-xl border border-df-black/10 dark:border-df-white/10 bg-df-white dark:bg-df-black">
-            <div className="w-9 h-9 rounded-lg bg-df-pink/10 text-df-pink flex items-center justify-center shrink-0">
-              <Zap className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="font-bold text-sm text-df-black dark:text-df-white">Instant Local Processing</h4>
-              <p className="text-xs text-df-black/60 dark:text-df-white/60 mt-0.5">
-                Eliminate upload delays and file queue wait times. Powered by high-speed client WebAssembly.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3.5 p-4 rounded-xl border border-df-black/10 dark:border-df-white/10 bg-df-white dark:bg-df-black">
-            <div className="w-9 h-9 rounded-lg bg-df-black/10 dark:bg-df-white/10 text-df-black dark:text-df-white flex items-center justify-center shrink-0">
-              <Lock className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="font-bold text-sm text-df-black dark:text-df-white">Completely Free Forever</h4>
-              <p className="text-xs text-df-black/60 dark:text-df-white/60 mt-0.5">
-                No credit cards, no premium tiers, no hidden limits, and no watermark additions.
-              </p>
-            </div>
-          </div>
+        {/* Clean, Subtle Trust Bar */}
+        <div className="pt-8 border-t border-df-black/10 dark:border-df-white/10 text-center">
+          <p className="text-xs text-df-black/50 dark:text-df-white/50">
+            &bull; Processed 100% locally in your browser &bull; Your files never leave your computer &bull; Free forever with no limits
+          </p>
         </div>
       </div>
     </section>

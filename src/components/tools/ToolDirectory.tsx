@@ -49,7 +49,7 @@ export const ToolDirectory: React.FC<ToolDirectoryProps> = ({ onSelectTool }) =>
               <span>Full Toolkit Directory</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-df-black dark:text-df-white">
-              Every document tool at your fingertips
+              All PDF and document tools
             </h2>
             <p className="text-sm text-df-black/60 dark:text-df-white/60 max-w-xl">
               50+ precision tools built with client-side WebAssembly, Canvas, and Web Crypto APIs. Fast, private, and zero server lag.

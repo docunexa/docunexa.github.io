@@ -31,7 +31,7 @@ export const Footer: React.FC<FooterProps> = ({
               <span className="font-bold text-lg text-df-black dark:text-df-white">DocuFlow</span>
             </div>
             <p className="text-sm text-df-black/70 dark:text-df-white/70 max-w-md leading-relaxed">
-              Every document. One simple workspace. Convert, compress, merge, split, and organize documents directly in your browser without uploading files to remote servers.
+              Free client-side document tools. Convert, compress, merge, split, sign, and organize documents directly in your browser without uploading files to remote servers.
             </p>
             <div className="inline-flex items-center gap-2 text-xs font-medium px-2.5 py-1.5 rounded-full bg-df-black/5 dark:bg-df-white/5 border border-df-black/10 dark:border-df-white/10 text-df-black/80 dark:text-df-white/80">
               <ShieldCheck className="w-4 h-4 text-df-blue" />

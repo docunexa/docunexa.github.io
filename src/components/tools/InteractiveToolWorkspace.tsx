@@ -304,6 +304,14 @@ export const InteractiveToolWorkspace: React.FC<InteractiveToolWorkspaceProps> =
     tool.id
   );
 
+  const selectButtonText = tool.sourceFormats.includes('pdf')
+    ? isMultiFileTool ? 'Select PDF files' : 'Select PDF file'
+    : tool.sourceFormats.includes('docx')
+    ? 'Select Word (.docx) file'
+    : tool.sourceFormats.includes('png') || tool.sourceFormats.includes('jpg')
+    ? isMultiFileTool ? 'Select Images' : 'Select Image'
+    : 'Select File';
+
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fadeIn">
       {/* Top Breadcrumb & Return Action */}
@@ -353,7 +361,7 @@ export const InteractiveToolWorkspace: React.FC<InteractiveToolWorkspaceProps> =
               className="inline-flex items-center justify-center gap-3 px-10 py-5 rounded-2xl bg-df-blue hover:bg-df-blue/90 text-df-white text-lg font-bold shadow-xl shadow-df-blue/20 transition-all hover:scale-105 active:scale-95 cursor-pointer"
             >
               <Upload className="w-6 h-6" />
-              <span>{isMultiFileTool ? 'Select PDF files' : 'Select PDF file'}</span>
+              <span>{selectButtonText}</span>
             </button>
             <p className="text-xs text-df-black/50 dark:text-df-white/50 mt-3">
               or drop files here &bull; processed securely on your computer

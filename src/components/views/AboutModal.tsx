@@ -13,7 +13,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
       isOpen={isOpen}
       onClose={onClose}
       title="About DocuFlow"
-      subtitle="Every document. One simple workspace."
+      subtitle="Free, private in-browser document tools."
       maxWidth="xl"
     >
       <div className="space-y-6 text-xs sm:text-sm text-df-black/80 dark:text-df-white/80 leading-relaxed">

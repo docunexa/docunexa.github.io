@@ -97,14 +97,9 @@ export const Navbar: React.FC<NavbarProps> = ({
               </svg>
             </div>
             <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-xl tracking-tight text-df-black dark:text-df-white">
-                  DocuFlow
-                </span>
-                <span className="text-[10px] font-bold uppercase px-1.5 py-0.5 rounded bg-df-pink/15 text-df-pink border border-df-pink/20">
-                  Client-Side
-                </span>
-              </div>
+              <span className="font-extrabold text-xl tracking-tight text-df-black dark:text-df-white">
+                DocuFlow
+              </span>
             </div>
           </button>
 

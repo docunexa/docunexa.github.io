@@ -116,29 +116,16 @@ export const MegaMenu: React.FC<MegaMenuProps> = ({ isOpen, onClose, onSelectToo
       onMouseLeave={onClose}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Flagship Banner */}
-        <div className="mb-6 p-4 rounded-xl bg-df-blue/10 border border-df-blue/20 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-df-blue text-df-white flex items-center justify-center font-bold shadow-sm">
-              <Sparkles className="w-5 h-5 text-df-pink" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-df-black dark:text-df-white text-sm">
-                  DocuFlow All-in-One Workspace
-                </span>
-                <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-df-pink/15 text-df-pink border border-df-pink/20">
-                  100% Free &amp; Client-Side
-                </span>
-              </div>
-              <p className="text-xs text-df-black/70 dark:text-df-white/70">
-                Every document tool to convert, merge, split, compress, and sign PDFs locally with zero server uploads.
-              </p>
-            </div>
+        {/* Header */}
+        <div className="flex items-center justify-between pb-4 mb-6 border-b border-df-black/10 dark:border-df-white/10">
+          <div>
+            <h3 className="font-bold text-base text-df-black dark:text-df-white">All PDF &amp; Document Tools</h3>
+            <p className="text-xs text-df-black/60 dark:text-df-white/60">Select any tool to open directly in the editor</p>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-df-black/50 hover:text-df-black dark:text-df-white/50 dark:hover:text-df-white"
+            className="p-1.5 rounded-lg text-df-black/50 hover:text-df-black dark:text-df-white/50 dark:hover:text-df-white hover:bg-df-black/5 dark:hover:bg-df-white/5 transition-colors"
+            aria-label="Close menu"
           >
             <X className="w-5 h-5" />
           </button>
